@@ -2,21 +2,29 @@
 <head></head>
 <body>
   <script>
-    ws = new WebSocket("ws://192.168.1.100:8888/ws");
-    ws.onopen = function (event) {
-      ws.send("connected");
+  ws = new WebSocket("ws://192.168.1.100:8888/ws");
+  ws.onopen = function (event) {
+    ws.send("connected");
+  }
+  ws.onmessage = function (event) {
+    console.log(event.data);
+    document.getElementById('received').innerHTML += event.data + "<br>"
+  }
+  function sendMessage(form) {
+    if (form.msg.value !== "") {
+      ws.send(form.msg.value);
+      form.msg.value = "";
     }
-    ws.onmessage = function (event) {
-      console.log(event.data);
-      document.getElementById('received').innerHTML += event.data + "<br>"
-    }
-    function sendMessage(msg) {
-      ws.send(msg);
-    }
+    return false;
+  }
   </script>
-  <h1>Websocket Example</h1>
-  <input type="text" id="msg"/>
-  <button onclick="sendMessage(document.getElementById('msg').value)">Send</button>
-  <div id="received"></div>
+  <div style="text-align:center;">
+    <h1>Websocket Messages</h1>
+    <form onsubmit="return sendMessage(this);">
+      <input type="text" id="msg" name="msg"/>
+      <input type="submit" value="Send"/>
+    </form>
+    <div id="received"></div>
+  </div>
 </body>
 </html>
